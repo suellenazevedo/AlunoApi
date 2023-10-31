@@ -1,14 +1,42 @@
 using Generation.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("AlunoConnection");
+//var connectionString = builder.Configuration.GetConnectionString("AlunoConnection");
 
-builder.Services.AddDbContext<AlunoContext>(opts => 
-    opts.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+//builder.Services.AddDbContext<AlunoContext>(opts => 
+   //opts.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+// Conexão com o Banco de dados
+if (builder.Configuration["Environment:Start"] == "PROD")
+{
+    // Conexão com o PostgresSQL - Nuvem
+
+    builder.Configuration
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("secrets.json");
+
+    var connectionString = builder.Configuration
+   .GetConnectionString("ProdConnection");
+
+    builder.Services.AddDbContext<AlunoContext>(options =>
+        options.UseNpgsql(connectionString)
+    );
+}
+else
+{
+    // Conexão com o MySql - Localhost
+    var connectionString = builder.Configuration
+    .GetConnectionString("AlunoConnection");
+
+    builder.Services.AddDbContext<AlunoContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+    );
+}
 
 builder.Services.
     AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -33,6 +61,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Swagger Como Página Inicial - Nuvem
+
+if (app.Environment.IsProduction())
+{
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Alunos API - v1");
+        options.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();

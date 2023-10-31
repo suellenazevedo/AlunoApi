@@ -17,6 +17,6 @@ namespace Generation.Data.Dtos
 
         public float NotaSegundoSemestre { get; set; }
 
-        public DateTime HoraDaConsulta { get; set;} = DateTime.Now;
+        //public DateTime HoraDaConsulta { get; set;} = DateTime.Now;
     }
 }
