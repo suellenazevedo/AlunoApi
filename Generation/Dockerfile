@@ -5,8 +5,8 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Generation/Generation.csproj", "Generation/"]
-RUN dotnet restore "Generation/Generation.csproj"
+COPY ["Generation.csproj", "."]
+RUN dotnet restore "./Generation.csproj"
 COPY . .
 WORKDIR "/src/Generation"
 RUN dotnet build "Generation.csproj" -c Release -o /app/build
