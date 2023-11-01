@@ -69,7 +69,7 @@ if (app.Environment.IsProduction())
 {
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Alunos API - v1");
+        options.SwaggerEndpoint("/swagger", "Alunos API - v1");
         options.RoutePrefix = string.Empty;
     });
 }

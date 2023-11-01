@@ -4,6 +4,7 @@ namespace Generation.Data.Dtos
 {
     public class ReadAlunoDto
     {
+        public int Id { get; set; }
 
         public string? Nome { get; set; }
 
